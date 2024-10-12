@@ -3,3 +3,8 @@ export enum MessageTypeEnum {
   sticker = "sticker",
   image = "image",
 }
+
+export enum RoleEnum {
+  admin = "admin",
+  user = "user",
+}

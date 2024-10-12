@@ -2,7 +2,7 @@ import { Controller, Get, Query, Req, UseGuards } from "@nestjs/common";
 import { GetMessagesDto } from "src/helpers/dto";
 import { MessageService } from "./message.service";
 import { ApiResponse } from "src/helpers/apiResponse";
-import { AuthGuard } from "src/helpers/authGuard";
+import { AuthGuard } from "src/helpers/guards";
 import { IRequest } from "src/helpers/types";
 import { ApiTags } from "@nestjs/swagger";
 

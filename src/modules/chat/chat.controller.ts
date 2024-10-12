@@ -4,7 +4,7 @@ import { CreateChatDto } from "./dto/create-chat.dto";
 import { UpdateChatDto } from "./dto/update-chat.dto";
 import { ApiResponse } from "src/helpers/apiResponse";
 import { PaginationDto } from "src/helpers/dto";
-import { AuthGuard } from "src/helpers/authGuard";
+import { AuthGuard } from "src/helpers/guards";
 import { IRequest } from "src/helpers/types";
 import { ApiTags } from "@nestjs/swagger";
 

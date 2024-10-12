@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, UseGuards, Req, Patch } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreateAuthDto } from "./dto/create-auth.dto";
-import { AuthGuard } from "src/helpers/authGuard";
+import { AuthGuard } from "src/helpers/guards";
 import { IRequest } from "src/helpers/types";
 import { refreshDto } from "./dto/refresh.dto";
 import { UpdateAuthDto } from "./dto/update-auth.dto";

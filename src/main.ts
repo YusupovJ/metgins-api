@@ -10,8 +10,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
-    .setTitle("chat-craft-api")
-    .setDescription("minimal desc for chat-craft")
+    .setTitle("metgins-api")
+    .setDescription("minimal desc for metgins")
     .setVersion("1.0")
     .addTag("chat")
     .build();

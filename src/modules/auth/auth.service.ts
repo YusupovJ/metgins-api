@@ -27,8 +27,8 @@ export class AuthService {
 
     const savedUser = await this.authService.save(newUser);
 
-    const accessToken = token.generateAccessToken({ userId: savedUser.id });
-    const refreshToken = token.generateRefreshToken({ userId: savedUser.id });
+    const accessToken = token.generateAccessToken({ userId: savedUser.id, role: savedUser.role });
+    const refreshToken = token.generateRefreshToken({ userId: savedUser.id, role: savedUser.role });
 
     savedUser.token = hashSync(refreshToken, 3);
 
@@ -49,8 +49,8 @@ export class AuthService {
       throw new BadRequestException("Имя или пароль неверны");
     }
 
-    const accessToken = token.generateAccessToken({ userId: user.id });
-    const refreshToken = token.generateRefreshToken({ userId: user.id });
+    const accessToken = token.generateAccessToken({ userId: user.id, role: user.role });
+    const refreshToken = token.generateRefreshToken({ userId: user.id, role: user.role });
 
     user.token = hashSync(refreshToken, 3);
 
@@ -84,8 +84,8 @@ export class AuthService {
       throw new UnauthorizedException("Неверный Токен");
     }
 
-    const accessToken = token.generateAccessToken({ userId: user.id });
-    const refreshToken = token.generateRefreshToken({ userId: user.id });
+    const accessToken = token.generateAccessToken({ userId: user.id, role: user.role });
+    const refreshToken = token.generateRefreshToken({ userId: user.id, role: user.role });
     user.token = hashSync(refreshToken, 3);
 
     await this.authService.save(user);
