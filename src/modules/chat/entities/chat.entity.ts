@@ -1,3 +1,4 @@
+import { ChatTypeEnum } from "src/helpers/enums";
 import { Auth } from "src/modules/auth/entities/auth.entity";
 import { Message } from "src/modules/message/entities/message.entity";
 import {
@@ -24,6 +25,9 @@ export class Chat {
 
   @Column("varchar")
   name: string;
+
+  @Column("enum", { enum: ChatTypeEnum, default: ChatTypeEnum.group })
+  type: string;
 
   @Column("varchar")
   img: string;

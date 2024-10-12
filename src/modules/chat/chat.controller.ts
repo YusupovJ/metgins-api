@@ -28,18 +28,21 @@ export class ChatController {
   }
 
   @Get(":id")
-  async findOne(@Param("id") id: string) {
-    const chat = await this.chatService.findOne(id);
+  @UseGuards(AuthGuard)
+  async findOne(@Param("id") id: string, @Req() req: IRequest) {
+    const chat = await this.chatService.findOne(id, req.userId);
     return new ApiResponse(chat);
   }
 
   @Patch(":id")
+  @UseGuards(AuthGuard)
   async update(@Param("id") id: string, @Body() updateChatDto: UpdateChatDto) {
     const updatedChat = await this.chatService.update(id, updateChatDto);
     return new ApiResponse(updatedChat, 201);
   }
 
   @Delete(":id")
+  @UseGuards(AuthGuard)
   async remove(@Param("id") id: string) {
     await this.chatService.remove(id);
     return new ApiResponse(`Чат ${id} удален`);

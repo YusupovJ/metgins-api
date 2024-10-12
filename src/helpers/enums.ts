@@ -8,3 +8,8 @@ export enum RoleEnum {
   admin = "admin",
   user = "user",
 }
+
+export enum ChatTypeEnum {
+  personal = "personal",
+  group = "group",
+}

@@ -17,20 +17,31 @@ export class ChatService {
   ) {}
 
   async create(createChatDto: CreateChatDto, userId: number) {
-    const { name } = createChatDto;
+    const { name, img, type, companionId } = createChatDto;
 
     const user = await this.authRepo.findOne({ where: { id: userId } });
 
     if (!user) {
-      throw new NotFoundException("user not found");
+      throw new NotFoundException("Пользователь не найден");
     }
 
     const newChat = new Chat();
 
     newChat.id = nanoid(16);
     newChat.name = name;
+    newChat.img = img;
+    newChat.type = type;
     newChat.users = [user];
-    newChat.img = createChatDto.img;
+
+    if (companionId) {
+      const userCompanion = await this.authRepo.findOne({ where: { id: companionId } });
+
+      if (!user) {
+        throw new NotFoundException("Собеседник не найден");
+      }
+
+      newChat.users.push(userCompanion);
+    }
 
     const savedChat = await this.chatRepo.save(newChat);
 
@@ -40,25 +51,43 @@ export class ChatService {
   async findAll({ limit, page }: PaginationDto, userId: number) {
     const totalItems = await this.chatRepo.count();
     const pagination = new Pagination(totalItems, page, limit);
-    const chats = await this.chatRepo
+    let chats = await this.chatRepo
       .createQueryBuilder("chat")
-      .leftJoinAndSelect("chat.users", "user")
+      .leftJoinAndSelect("chat.users", "users")
       .leftJoinAndSelect(
         "chat.messages",
         "message",
         "message.id = (SELECT m.id FROM message m WHERE m.chatId = chat.id ORDER BY m.created_at DESC LIMIT 1)",
       )
-      .leftJoinAndSelect("message.user", "users")
-      .where("user.id = :userId", { userId })
+      .leftJoinAndSelect("message.user", "user")
+      .innerJoin("chat.users", "userFilter")
+      .where("userFilter.id = :userId", { userId })
       .skip(pagination.offset)
       .take(pagination.limit)
       .getMany();
 
+    chats = chats.map((chat) => {
+      if (chat.type === "personal") {
+        const userCompanion = chat.users.find((user) => user.id !== userId);
+        return { ...chat, name: userCompanion.username, img: userCompanion.avatar };
+      }
+
+      return chat;
+    });
+
     return { chats, pagination };
   }
 
-  async findOne(id: string) {
-    const chat = await this.chatRepo.findOne({ where: { id } });
+  async findOne(id: string, userId?: number) {
+    const chat = await this.chatRepo.findOne({
+      relations: ["users"],
+      where: { id },
+    });
+
+    if (chat.type === "personal") {
+      const userCompanion = chat.users.find((user) => user.id !== userId);
+      chat.name = userCompanion.username;
+    }
 
     if (!chat) {
       throw new NotFoundException("Чат не найден");

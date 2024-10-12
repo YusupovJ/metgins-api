@@ -21,7 +21,9 @@ export class MessageService {
       relations: ["users"],
     });
 
-    if (!chat) {
+    const isChatNotFound = !chat || (chat.type === "personal" && !chat.users.find((user) => user.id === userId));
+
+    if (isChatNotFound) {
       throw new NotFoundException("Чат не найден");
     }
 
