@@ -40,6 +40,19 @@ export class ChatService {
         throw new NotFoundException("Собеседник не найден");
       }
 
+      const userIds = [userId, userCompanion.id];
+
+      const chat = await this.chatRepo
+        .createQueryBuilder("chat")
+        .innerJoin("chat.users", "user")
+        .where("chat.type = :type", { type: "personal" })
+        .andWhere("user.id IN (:...userIds)", { userIds: [userId, userCompanion.id] })
+        .groupBy("chat.id")
+        .having("COUNT(user.id) = :userCount", { userCount: userIds.length })
+        .getOne();
+
+      if (chat) return chat;
+
       newChat.users.push(userCompanion);
     }
 

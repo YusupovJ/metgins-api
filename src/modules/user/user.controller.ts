@@ -1,10 +1,11 @@
-import { Controller, Get, Body, Patch, Param, Delete, Query, UseGuards } from "@nestjs/common";
+import { Controller, Get, Body, Patch, Param, Delete, Query, UseGuards, Req } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { ApiTags } from "@nestjs/swagger";
-import { PaginationDto } from "src/helpers/dto";
+import { PaginationDto, SearchDto } from "src/helpers/dto";
 import { ApiResponse } from "src/helpers/apiResponse";
 import { AuthGuard, RoleGuard } from "src/helpers/guards";
+import { IRequest } from "src/helpers/types";
 
 @Controller("user")
 @ApiTags("user")
@@ -17,6 +18,13 @@ export class UserController {
     const { pagination, users } = await this.userService.findAll(query);
 
     return new ApiResponse(users, 200, pagination);
+  }
+
+  @Get("/friend")
+  @UseGuards(AuthGuard)
+  async findFriends(@Query() query: SearchDto, @Req() { userId }: IRequest) {
+    const users = await this.userService.findFriend(query, userId);
+    return new ApiResponse(users);
   }
 
   @Get(":id")

@@ -62,7 +62,7 @@ export class AuthService {
   async me(id: number) {
     const user = await this.authService.findOne({
       where: { id },
-      select: ["username", "avatar", "id"],
+      select: ["username", "avatar", "id", "role"],
     });
     if (!user) {
       throw new UnauthorizedException("Пользователь не найден");

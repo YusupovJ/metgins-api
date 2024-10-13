@@ -23,13 +23,13 @@ export class Chat {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @Column("varchar")
+  @Column({ nullable: true })
   name: string;
 
   @Column("enum", { enum: ChatTypeEnum, default: ChatTypeEnum.group })
   type: string;
 
-  @Column("varchar")
+  @Column({ nullable: true })
   img: string;
 
   @ManyToMany(() => Auth, (user) => user.chats)

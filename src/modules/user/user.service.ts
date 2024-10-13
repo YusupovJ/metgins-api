@@ -3,13 +3,29 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { Pagination } from "src/helpers/pagination";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Auth } from "../auth/entities/auth.entity";
-import { Repository } from "typeorm";
-import { PaginationDto } from "src/helpers/dto";
+import { Like, Not, Repository } from "typeorm";
+import { PaginationDto, SearchDto } from "src/helpers/dto";
 import { hashSync } from "bcrypt";
 
 @Injectable()
 export class UserService {
   constructor(@InjectRepository(Auth) private userRepo: Repository<Auth>) {}
+
+  async findFriend({ search }: SearchDto, userId: number) {
+    if (search.length > 2) {
+      const users = await this.userRepo.find({
+        where: {
+          id: Not(userId),
+          username: Like(`%${search}%`),
+        },
+        select: ["avatar", "id", "username", "role"],
+      });
+
+      return users;
+    }
+
+    return [];
+  }
 
   async findAll({ page, limit }: PaginationDto) {
     const totalItems = await this.userRepo.count();
@@ -18,7 +34,7 @@ export class UserService {
     const users = await this.userRepo.find({
       skip: pagination.offset,
       take: pagination.limit,
-      select: ["avatar", "id", "username"],
+      select: ["avatar", "id", "username", "role"],
     });
 
     return { users, pagination };

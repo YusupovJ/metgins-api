@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNumber, IsOptional, IsString, MinLength } from "class-validator";
 
 export class CreateChatDto {
@@ -9,7 +9,8 @@ export class CreateChatDto {
   name: string;
 
   @IsString()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   img: string;
 
   @IsString()
